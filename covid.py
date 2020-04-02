@@ -49,15 +49,19 @@ class Form(QDialog):
     # Greets the user
     def greetings(self):
         var = 73
-        if self.edit.text().capitalize()!='Мир':
-            code = CountryCode.get(self.edit.text().capitalize(), var)
+        final_message=""
+        inp = self.edit.text()
+        if inp.capitalize()!='Мир':
+            code = CountryCode.get(inp, var)
+            if code==var:
+                code = CountryCode.get(inp.capitalize(), var)
             if code==var:
                 final_message = "Извините, страна не найдена("
             else:
                 location = covid19.getLocationByCountryCode(code)
                 date = location[0]['last_updated'].split("T")
                 time = date[1].split(".")
-                final_message = str(self.edit.text()).capitalize()+"\nДанные по стране: \n\tНаселение:" +str(location[0]['country_population'])+"\nПоследнее обновление:"+str(date[0])+" "+str(time[0])+"\n"+"Последние данные:\n"+"\tЗаболевших: "+str(location[0]['latest']['confirmed'])+"\n\t"+"Сметрей: "+str(location[0]['latest']['deaths'])
+                final_message = str(inp)+"\nДанные по стране: \n\tНаселение:" +str(location[0]['country_population'])+"\nПоследнее обновление:"+str(date[0])+" "+str(time[0])+"\n"+"Последние данные:\n"+"\tЗаболевших: "+str(location[0]['latest']['confirmed'])+"\n\t"+"Сметрей: "+str(location[0]['latest']['deaths'])
         else:
             final_message = "Данные по всему миру: \n \t Заболевших: "+str(covid19.getLatest()['confirmed'])+"\n \t Сметрей: "+str(covid19.getLatest()['deaths'])
         self.label = QLabel(final_message)
